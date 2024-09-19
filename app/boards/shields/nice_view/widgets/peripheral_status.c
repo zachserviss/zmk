@@ -31,6 +31,7 @@ LV_IMG_DECLARE(vamp);
 LV_IMG_DECLARE(house);
 LV_IMG_DECLARE(lnrsm);
 LV_IMG_DECLARE(animals);
+LV_IMG_DECLARE(seascape);
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
@@ -121,8 +122,8 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     lv_canvas_set_buffer(top, widget->cbuf, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
     lv_obj_t *art = lv_img_create(widget->obj);
-    lv_img_set_src(art, (lv_img_dsc_t *[]){&test, &re8, &vamp, &house, &lnrsm,
-                                           &animals}[sys_rand32_get() % 6]);
+    lv_img_set_src(art, (lv_img_dsc_t *[]){&test, &re8, &vamp, &house, &lnrsm, &animals,
+                                           &seascape}[sys_rand32_get() % 7]);
     lv_obj_align(art, LV_ALIGN_TOP_LEFT, 0, 0);
 
     sys_slist_append(&widgets, &widget->node);
