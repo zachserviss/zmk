@@ -3,7 +3,6 @@ id: cygnus
 name: Cygnus
 type: shield
 requires: [pro_micro]
-exposes: []
 features:
   - keys
 siblings:
