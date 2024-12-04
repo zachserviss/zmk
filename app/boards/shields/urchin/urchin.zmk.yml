@@ -1,6 +1,6 @@
 file_format: "1"
-id: cradio
-name: Cradio/Sweep
+id: Urchin
+name: Urchin/Sweep
 type: shield
 url: https://github.com/davidphilipbarr/Sweep
 requires: [pro_micro]
@@ -8,5 +8,5 @@ exposes: [i2c_oled]
 features:
   - keys
 siblings:
-  - cradio_left
-  - cradio_right
+  - Urchin_left
+  - Urchin_right

@@ -4,8 +4,4 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "cradio.dtsi"
-
-&default_transform {
-    col-offset = <17>;
-};
+#include "urchin.dtsi"
