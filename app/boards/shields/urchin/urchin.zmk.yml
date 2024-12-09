@@ -1,12 +1,11 @@
 file_format: "1"
-id: Urchin
-name: Urchin/Sweep
+id: urchin
+name: urchin
 type: shield
-url: https://github.com/davidphilipbarr/Sweep
+url: https://github.com/duckyb/urchin
 requires: [pro_micro]
-exposes: [i2c_oled]
 features:
   - keys
 siblings:
-  - Urchin_left
-  - Urchin_right
+  - urchin_left
+  - urchin_right

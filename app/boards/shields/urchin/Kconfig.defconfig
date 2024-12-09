@@ -1,4 +1,4 @@
-# Copyright (c) 2020 The ZMK Contributors
+# Copyright (c) 2022 Duccio Breschi
 # SPDX-License-Identifier: MIT
 
 if SHIELD_URCHIN_LEFT
@@ -12,8 +12,6 @@ config ZMK_SPLIT_ROLE_CENTRAL
 endif
 
 if SHIELD_URCHIN_LEFT || SHIELD_URCHIN_RIGHT
-
 config ZMK_SPLIT
     default y
-
 endif
