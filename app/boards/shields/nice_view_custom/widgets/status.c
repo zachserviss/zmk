@@ -140,7 +140,7 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     rotate_canvas(canvas, cbuf);
 }
 
-sstatic void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
+static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 1);
 
     lv_draw_rect_dsc_t rect_black_dsc;
