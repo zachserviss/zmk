@@ -43,17 +43,14 @@ struct layer_status_state {
 };
 
 struct wpm_status_state {
-    uint8_t wpm;                    // Current WPM
-    uint8_t wpm_history[10];        // Historical WPM values
-    uint8_t animation_state;        // Current animation state
-    bool key_pressed;              // Keypress state
-    bool is_key_event;            // Flag for key events
+    uint8_t wpm;             // Current WPM
+    uint8_t wpm_history[10]; // Historical WPM values
+    uint8_t animation_state; // Current animation state
+    bool key_pressed;        // Keypress state
+    bool is_key_event;       // Flag for key events
 };
 
-enum anim_state {
-    ANIM_STATE_CASUAL,
-    ANIM_STATE_FRENZIED
-} current_anim_state = ANIM_STATE_CASUAL;
+enum anim_state { ANIM_STATE_CASUAL, ANIM_STATE_FRENZIED } current_anim_state = ANIM_STATE_CASUAL;
 
 LV_IMG_DECLARE(bongocatrest0);
 LV_IMG_DECLARE(bongocatcasual1);
@@ -63,7 +60,7 @@ LV_IMG_DECLARE(bongocatfast2);
 
 static bool key_pressed = false;
 static bool key_released = false;
-static bool use_first_frame = true;  // Track which frame to use in the animation sequence
+static bool use_first_frame = true; // Track which frame to use in the animation sequence
 
 static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 0);
@@ -143,7 +140,7 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     rotate_canvas(canvas, cbuf);
 }
 
-static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
+sstatic void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 1);
 
     lv_draw_rect_dsc_t rect_black_dsc;
@@ -158,26 +155,22 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_18, LV_TEXT_ALIGN_CENTER);
     lv_draw_label_dsc_t label_dsc_black;
     init_label_dsc(&label_dsc_black, LVGL_BACKGROUND, &lv_font_montserrat_18, LV_TEXT_ALIGN_CENTER);
-    lv_draw_line_dsc_t line_dsc;
-    init_line_dsc(&line_dsc, LVGL_FOREGROUND, 1);
 
     // Fill background
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
     // Draw single BLE profile circle at the top
-    bool selected = true;
     int x = 34, y = 13;
+    bool selected = true; // Always selected since we are displaying only one circle
 
     lv_canvas_draw_arc(canvas, x, y, 13, 0, 360, &arc_dsc);
-
     if (selected) {
         lv_canvas_draw_arc(canvas, x, y, 9, 0, 359, &arc_dsc_filled);
     }
-
     char label[2];
-    snprintf(label, sizeof(label), "%d", 1);  // Hardcode to 1 since we don't need profile info here
-    lv_canvas_draw_text(canvas, x - 8, y - 10, 16,
-                        (selected ? &label_dsc_black : &label_dsc), label);
+    snprintf(label, sizeof(label), "%d", state->active_profile_index); // Display profile number 0-4
+    lv_canvas_draw_text(canvas, x - 8, y - 10, 16, (selected ? &label_dsc_black : &label_dsc),
+                        label);
 
     // Calculate average WPM over last 5 seconds
     int recent_wpm = 0;
@@ -195,12 +188,12 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
 
     // Determine which animation frame to use
     const lv_img_dsc_t *current_frame;
-    
+
     if (current_anim_state == ANIM_STATE_CASUAL) {
         if (key_pressed) {
             // Alternate between casual1 and casual2 on keypresses
             current_frame = use_first_frame ? &bongocatcasual1 : &bongocatcasual2;
-            use_first_frame = !use_first_frame;  // Toggle for next press
+            use_first_frame = !use_first_frame; // Toggle for next press
         } else {
             // Show rest frame when no key is pressed or when key is released
             current_frame = &bongocatrest0;
@@ -209,7 +202,7 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
         if (key_pressed || key_released) {
             // Alternate between fast1 and fast2 on every key event
             current_frame = use_first_frame ? &bongocatfast1 : &bongocatfast2;
-            use_first_frame = !use_first_frame;  // Toggle for next frame
+            use_first_frame = !use_first_frame; // Toggle for next frame
         } else {
             // Keep showing the last frame when no key events
             current_frame = use_first_frame ? &bongocatfast1 : &bongocatfast2;
@@ -222,7 +215,7 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     // Draw bongo cat animation frame
     lv_canvas_draw_rect(canvas, 0, 28, 68, 40, &rect_white_dsc);
     lv_canvas_draw_rect(canvas, 1, 29, 66, 38, &rect_black_dsc);
-    
+
     lv_draw_img_dsc_t img_dsc;
     lv_draw_img_dsc_init(&img_dsc);
     lv_canvas_draw_img(canvas, 0, 28, current_frame, &img_dsc);
@@ -276,7 +269,7 @@ static void battery_status_update_cb(struct battery_status_state state) {
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
 
-    return (struct battery_status_state) {
+    return (struct battery_status_state){
         .level = (ev != NULL) ? ev->state_of_charge : zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
@@ -361,7 +354,7 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
     if (state.is_key_event) {
         key_pressed = state.key_pressed;
         key_released = !state.key_pressed;
-        
+
         // Force redraw on every key event
         draw_middle(widget->obj, widget->cbuf2, &widget->state);
     } else {
@@ -372,8 +365,7 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
         }
         recent_wpm /= 5;
 
-        enum anim_state new_state = (recent_wpm > 30) ? 
-            ANIM_STATE_FRENZIED : ANIM_STATE_CASUAL;
+        enum anim_state new_state = (recent_wpm > 30) ? ANIM_STATE_FRENZIED : ANIM_STATE_CASUAL;
 
         if (new_state != current_anim_state) {
             current_anim_state = new_state;
@@ -391,12 +383,12 @@ static void wpm_status_update_cb(struct wpm_status_state state) {
 }
 
 struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
-    static uint8_t wpm_history[10] = {0};  // Keep track of history between calls
-    static uint8_t current_wpm = 0;        // Keep track of current WPM between calls
-    
+    static uint8_t wpm_history[10] = {0}; // Keep track of history between calls
+    static uint8_t current_wpm = 0;       // Keep track of current WPM between calls
+
     const struct zmk_wpm_state_changed *wpm_ev = as_zmk_wpm_state_changed(eh);
     const struct zmk_position_state_changed *pos_ev = as_zmk_position_state_changed(eh);
-    
+
     // Update WPM if this is a WPM event
     if (wpm_ev != NULL) {
         current_wpm = wpm_ev->state;
@@ -422,16 +414,16 @@ struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     return (struct wpm_status_state){
         .wpm = current_wpm,
         .wpm_history = {wpm_history[0], wpm_history[1], wpm_history[2], wpm_history[3],
-                       wpm_history[4], wpm_history[5], wpm_history[6], wpm_history[7],
-                       wpm_history[8], wpm_history[9]},
+                        wpm_history[4], wpm_history[5], wpm_history[6], wpm_history[7],
+                        wpm_history[8], wpm_history[9]},
         .animation_state = current_anim_state,
         .key_pressed = key_pressed,
-        .is_key_event = is_key_event  // Add this flag to the struct
+        .is_key_event = is_key_event // Add this flag to the struct
     };
 }
 
-ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state, 
-                          wpm_status_update_cb, wpm_status_get_state)
+ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state, wpm_status_update_cb,
+                            wpm_status_get_state)
 ZMK_SUBSCRIPTION(widget_wpm_status, zmk_wpm_state_changed);
 ZMK_SUBSCRIPTION(widget_wpm_status, zmk_position_state_changed);
 
@@ -458,5 +450,3 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
 }
 
 lv_obj_t *zmk_widget_status_obj(struct zmk_widget_status *widget) { return widget->obj; }
-
-
