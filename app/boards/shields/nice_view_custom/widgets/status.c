@@ -25,8 +25,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
 #include <zmk/wpm.h>
-#include <zmk/events/position_state_changed.h>
-#include "bongocatart.h"
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
@@ -43,24 +41,8 @@ struct layer_status_state {
 };
 
 struct wpm_status_state {
-    uint8_t wpm;             // Current WPM
-    uint8_t wpm_history[10]; // Historical WPM values
-    uint8_t animation_state; // Current animation state
-    bool key_pressed;        // Keypress state
-    bool is_key_event;       // Flag for key events
+    uint8_t wpm;
 };
-
-enum anim_state { ANIM_STATE_CASUAL, ANIM_STATE_FRENZIED } current_anim_state = ANIM_STATE_CASUAL;
-
-LV_IMG_DECLARE(bongocatrest0);
-LV_IMG_DECLARE(bongocatcasual1);
-LV_IMG_DECLARE(bongocatcasual2);
-LV_IMG_DECLARE(bongocatfast1);
-LV_IMG_DECLARE(bongocatfast2);
-
-static bool key_pressed = false;
-static bool key_released = false;
-static bool use_first_frame = true; // Track which frame to use in the animation sequence
 
 static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 0);
@@ -159,66 +141,27 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     // Fill background
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
-    // Draw single BLE profile circle at the top
-    int x = 34, y = 13;
-    bool selected = true; // Always selected since we are displaying only one circle
+    // Draw circles
+    int circle_offsets[5][2] = {
+        {13, 13}, {55, 13}, {34, 34}, {13, 55}, {55, 55},
+    };
 
-    lv_canvas_draw_arc(canvas, x, y, 13, 0, 360, &arc_dsc);
-    if (selected) {
-        lv_canvas_draw_arc(canvas, x, y, 9, 0, 359, &arc_dsc_filled);
-    }
-    char label[2];
-    snprintf(label, sizeof(label), "%d", state->active_profile_index); // Display profile number 0-4
-    lv_canvas_draw_text(canvas, x - 8, y - 10, 16, (selected ? &label_dsc_black : &label_dsc),
-                        label);
+    for (int i = 0; i < 5; i++) {
+        bool selected = i == state->active_profile_index;
 
-    // Calculate average WPM over last 5 seconds
-    int recent_wpm = 0;
-    for (int i = 5; i < 10; i++) {
-        recent_wpm += state->wpm[i];
-    }
-    recent_wpm /= 5;
+        lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13, 0, 360,
+                           &arc_dsc);
 
-    // Update animation state based on WPM
-    if (recent_wpm > 30) {
-        current_anim_state = ANIM_STATE_FRENZIED;
-    } else {
-        current_anim_state = ANIM_STATE_CASUAL;
-    }
-
-    // Determine which animation frame to use
-    const lv_img_dsc_t *current_frame;
-
-    if (current_anim_state == ANIM_STATE_CASUAL) {
-        if (key_pressed) {
-            // Alternate between casual1 and casual2 on keypresses
-            current_frame = use_first_frame ? &bongocatcasual1 : &bongocatcasual2;
-            use_first_frame = !use_first_frame; // Toggle for next press
-        } else {
-            // Show rest frame when no key is pressed or when key is released
-            current_frame = &bongocatrest0;
+        if (selected) {
+            lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 9, 0, 359,
+                               &arc_dsc_filled);
         }
-    } else { // ANIM_STATE_FRENZIED
-        if (key_pressed || key_released) {
-            // Alternate between fast1 and fast2 on every key event
-            current_frame = use_first_frame ? &bongocatfast1 : &bongocatfast2;
-            use_first_frame = !use_first_frame; // Toggle for next frame
-        } else {
-            // Keep showing the last frame when no key events
-            current_frame = use_first_frame ? &bongocatfast1 : &bongocatfast2;
-        }
+
+        char label[2];
+        snprintf(label, sizeof(label), "%d", i + 1);
+        lv_canvas_draw_text(canvas, circle_offsets[i][0] - 8, circle_offsets[i][1] - 10, 16,
+                            (selected ? &label_dsc_black : &label_dsc), label);
     }
-
-    // Reset key_released flag after handling
-    key_released = false;
-
-    // Draw bongo cat animation frame
-    lv_canvas_draw_rect(canvas, 0, 28, 68, 40, &rect_white_dsc);
-    lv_canvas_draw_rect(canvas, 1, 29, 66, 38, &rect_black_dsc);
-
-    lv_draw_img_dsc_t img_dsc;
-    lv_draw_img_dsc_init(&img_dsc);
-    lv_canvas_draw_img(canvas, 0, 28, current_frame, &img_dsc);
 
     // Rotate canvas
     rotate_canvas(canvas, cbuf);
@@ -344,37 +287,12 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, laye
 ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
 
 static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_state state) {
-    // Update WPM array
     for (int i = 0; i < 9; i++) {
         widget->state.wpm[i] = widget->state.wpm[i + 1];
     }
     widget->state.wpm[9] = state.wpm;
 
-    // Only update key states if this was triggered by a key event
-    if (state.is_key_event) {
-        key_pressed = state.key_pressed;
-        key_released = !state.key_pressed;
-
-        // Force redraw on every key event
-        draw_middle(widget->obj, widget->cbuf2, &widget->state);
-    } else {
-        // For WPM updates, only redraw if we need to change animation state
-        int recent_wpm = 0;
-        for (int i = 5; i < 10; i++) {
-            recent_wpm += widget->state.wpm[i];
-        }
-        recent_wpm /= 5;
-
-        enum anim_state new_state = (recent_wpm > 30) ? ANIM_STATE_FRENZIED : ANIM_STATE_CASUAL;
-
-        if (new_state != current_anim_state) {
-            current_anim_state = new_state;
-            draw_middle(widget->obj, widget->cbuf2, &widget->state);
-        } else {
-            // Regular WPM update
-            draw_top(widget->obj, widget->cbuf, &widget->state);
-        }
-    }
+    draw_top(widget->obj, widget->cbuf, &widget->state);
 }
 
 static void wpm_status_update_cb(struct wpm_status_state state) {
@@ -383,49 +301,12 @@ static void wpm_status_update_cb(struct wpm_status_state state) {
 }
 
 struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
-    static uint8_t wpm_history[10] = {0}; // Keep track of history between calls
-    static uint8_t current_wpm = 0;       // Keep track of current WPM between calls
-
-    const struct zmk_wpm_state_changed *wpm_ev = as_zmk_wpm_state_changed(eh);
-    const struct zmk_position_state_changed *pos_ev = as_zmk_position_state_changed(eh);
-
-    // Update WPM if this is a WPM event
-    if (wpm_ev != NULL) {
-        current_wpm = wpm_ev->state;
-        for (int i = 0; i < 9; i++) {
-            wpm_history[i] = wpm_history[i + 1];
-        }
-        wpm_history[9] = current_wpm;
-    }
-
-    // Update key state if this is a position event
-    bool is_key_event = false;
-    if (pos_ev != NULL) {
-        is_key_event = true;
-        if (pos_ev->state > 0) {
-            key_pressed = true;
-            key_released = false;
-        } else {
-            key_pressed = false;
-            key_released = true;
-        }
-    }
-
-    return (struct wpm_status_state){
-        .wpm = current_wpm,
-        .wpm_history = {wpm_history[0], wpm_history[1], wpm_history[2], wpm_history[3],
-                        wpm_history[4], wpm_history[5], wpm_history[6], wpm_history[7],
-                        wpm_history[8], wpm_history[9]},
-        .animation_state = current_anim_state,
-        .key_pressed = key_pressed,
-        .is_key_event = is_key_event // Add this flag to the struct
-    };
-}
+    return (struct wpm_status_state){.wpm = zmk_wpm_get_state()};
+};
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state, wpm_status_update_cb,
                             wpm_status_get_state)
 ZMK_SUBSCRIPTION(widget_wpm_status, zmk_wpm_state_changed);
-ZMK_SUBSCRIPTION(widget_wpm_status, zmk_position_state_changed);
 
 int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
