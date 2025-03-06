@@ -214,7 +214,7 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     }
 
     char label[2];
-    snprintf(label, sizeof(label), "%d", 1); // Hardcode to 1 since we don't need profile info here
+    snprintf(label, sizeof(label), "%d", state->active_profile_index); // Hardcode to 1 since we don't need profile info here
     lv_canvas_draw_text(canvas, x - 8, y - 10, 16, (selected ? &label_dsc_black : &label_dsc),
                         label);
 
