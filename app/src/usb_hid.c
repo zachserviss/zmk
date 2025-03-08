@@ -57,11 +57,56 @@ static uint8_t *get_keyboard_report(size_t *len) {
 static int get_report_cb(const struct device *dev, struct usb_setup_packet *setup, int32_t *len,
                          uint8_t **data) {
 
+<<<<<<< HEAD
     /*
      * 7.2.1 of the HID v1.11 spec is unclear about handling requests for reports that do not exist
      * For requested reports that aren't input reports, return -ENOTSUP like the Zephyr subsys does
      */
     if ((setup->wValue & HID_GET_REPORT_TYPE_MASK) != HID_REPORT_TYPE_INPUT) {
+=======
+            struct zmk_endpoint_instance endpoint = {
+                .transport = ZMK_TRANSPORT_USB,
+            };
+
+            *len = sizeof(struct zmk_hid_mouse_resolution_feature_report);
+            struct zmk_pointing_resolution_multipliers mult =
+                zmk_pointing_resolution_multipliers_get_profile(endpoint);
+
+            res_feature_report.body.wheel_res = mult.wheel;
+            res_feature_report.body.hwheel_res = mult.hor_wheel;
+            *data = (uint8_t *)&res_feature_report;
+            break;
+#endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
+        default:
+            return -ENOTSUP;
+        }
+        break;
+    case HID_REPORT_TYPE_INPUT:
+        switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
+        case ZMK_HID_REPORT_ID_KEYBOARD: {
+            size_t size;
+            *data = get_keyboard_report(&size);
+            *len = (int32_t)size;
+            break;
+        }
+        case ZMK_HID_REPORT_ID_CONSUMER: {
+            struct zmk_hid_consumer_report *report = zmk_hid_get_consumer_report();
+            *data = (uint8_t *)report;
+            *len = sizeof(*report);
+            break;
+        }
+        default:
+            LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
+            return -EINVAL;
+        }
+        break;
+    default:
+        /*
+         * 7.2.1 of the HID v1.11 spec is unclear about handling requests for reports that do not
+         * exist For requested reports that aren't input reports, return -ENOTSUP like the Zephyr
+         * subsys does
+         */
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
         LOG_ERR("Unsupported report type %d requested", (setup->wValue & HID_GET_REPORT_TYPE_MASK)
                                                             << 8);
         return -ENOTSUP;

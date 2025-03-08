@@ -455,7 +455,13 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
     }
 
     LOG_DBG("[ATTRIBUTE] handle %u", attr->handle);
+<<<<<<< HEAD
     const struct bt_uuid *chrc_uuid = ((struct bt_gatt_chrc *)attr->user_data)->uuid;
+=======
+    switch (params->type) {
+    case BT_GATT_DISCOVER_CHARACTERISTIC: {
+        const struct bt_uuid *chrc_uuid = ((struct bt_gatt_chrc *)attr->user_data)->uuid;
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
     if (bt_uuid_cmp(chrc_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID)) == 0) {
         LOG_DBG("Found position state characteristic");
@@ -513,6 +519,55 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         slot->batt_lvl_read_params.single.offset = 0;
         bt_gatt_read(conn, &slot->batt_lvl_read_params);
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+<<<<<<< HEAD
+=======
+        }
+        break;
+    }
+    case BT_GATT_DISCOVER_STD_CHAR_DESC:
+#if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
+        if (bt_uuid_cmp(slot->discover_params.uuid, BT_UUID_GATT_CCC) == 0) {
+            LOG_DBG("Found input CCC descriptor");
+            struct peripheral_input_slot *input_slot;
+            int ret = find_pending_input_slot(&input_slot, conn);
+            if (ret < 0) {
+                LOG_DBG("No pending input slot (%d)", ret);
+                slot->discover_params.uuid = NULL;
+                slot->discover_params.start_handle = attr->handle + 1;
+                slot->discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
+            } else {
+                LOG_DBG("Found pending input slot");
+                input_slot->sub.ccc_handle = attr->handle;
+
+                slot->discover_params.uuid = gatt_cpf_uuid;
+                slot->discover_params.start_handle = attr->handle + 1;
+                slot->discover_params.type = BT_GATT_DISCOVER_STD_CHAR_DESC;
+            }
+        } else if (bt_uuid_cmp(slot->discover_params.uuid, BT_UUID_GATT_CPF) == 0) {
+            LOG_DBG("Found input CPF descriptor");
+            struct bt_gatt_cpf *cpf = attr->user_data;
+            struct peripheral_input_slot *input_slot;
+            int ret = find_pending_input_slot(&input_slot, conn);
+            if (ret < 0) {
+                LOG_DBG("No pending input slot (%d)", ret);
+            } else {
+                LOG_DBG("Found pending input slot");
+                input_slot->reg = cpf->description;
+                input_slot->sub.notify = peripheral_input_event_notify_cb;
+                input_slot->sub.value = BT_GATT_CCC_NOTIFY;
+                int err = split_central_subscribe(conn, &input_slot->sub);
+                if (err < 0) {
+                    LOG_WRN("Failed to subscribe to input notifications %d", err);
+                }
+            }
+
+            slot->discover_params.uuid = NULL;
+            slot->discover_params.start_handle = attr->handle + 1;
+            slot->discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
+        }
+#endif // IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
+        break;
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
     }
 
     bool subscribed = slot->run_behavior_handle && slot->subscribe_params.value_handle &&

@@ -6,11 +6,23 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
+<<<<<<< HEAD
+=======
+#include "urchin-layouts.dtsi"
+
+&default_layout {
+    transform = <&default_transform>;
+};
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 / {
     chosen {
         zmk,kscan = &kscan0;
+<<<<<<< HEAD
         zmk,matrix_transform = &default_transform;
+=======
+        zmk,physical-layout = &default_layout;
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
     };
 
     default_transform: keymap_transform_0 {
@@ -26,8 +38,16 @@
         >;
     };
 
+<<<<<<< HEAD
     kscan0: kscan {        
         compatible = "zmk,kscan-gpio-matrix";
         label = "KSCAN0";
     };
 };
+=======
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+    };
+};
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684

@@ -63,8 +63,17 @@ function InterconnectTabs({ items }: InterconnectTabsProps) {
     .sort((a, b) => a.id.localeCompare(b.id));
 
   return (
+<<<<<<< HEAD
     <Tabs defaultValue={"pro_micro"} values={grouped.map(mapInterconnectValue)}>
       {grouped.map(mapInterconnect)}
+=======
+    <Tabs
+      queryString="interconnect"
+      defaultValue={"pro_micro"}
+      values={grouped.map(mapInterconnectValue)}
+    >
+      {grouped.map((items) => mapInterconnect(items, gpio))}
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
     </Tabs>
   );
 }

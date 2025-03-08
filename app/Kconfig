@@ -245,8 +245,17 @@ config BT_PERIPHERAL_PREF_LATENCY
 config BT_PERIPHERAL_PREF_TIMEOUT
     default 400
 
+<<<<<<< HEAD
 #ZMK_BLE
 endif
+=======
+# The device name should be 16 characters or less so it fits within the
+# advertising data.
+config BT_DEVICE_NAME_MAX
+    default 16
+
+endif # ZMK_BLE
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 #Output Types
 endmenu
@@ -539,6 +548,10 @@ endif
 
 #Initialization Priorities
 endmenu
+
+config ZMK_PHYSICAL_LAYOUT_KEY_ROTATION
+    bool "Support rotation of keys in physical layouts"
+    default y
 
 menuconfig ZMK_KSCAN
     bool "ZMK KScan Integration"

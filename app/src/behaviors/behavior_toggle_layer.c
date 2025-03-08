@@ -20,8 +20,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct behavior_tog_config {};
 struct behavior_tog_data {};
 
-static int behavior_tog_init(const struct device *dev) { return 0; };
-
 static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
@@ -63,7 +61,16 @@ static const struct behavior_driver_api behavior_tog_driver_api = {
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
+<<<<<<< HEAD
 static const struct behavior_tog_config behavior_tog_config = {};
+=======
+#define KT_INST(n)                                                                                 \
+    static const struct behavior_tog_config behavior_tog_config_##n = {                            \
+        .toggle_mode = DT_ENUM_IDX(DT_DRV_INST(n), toggle_mode),                                   \
+    };                                                                                             \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, &behavior_tog_config_##n, POST_KERNEL,            \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tog_driver_api);
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 static struct behavior_tog_data behavior_tog_data;
 

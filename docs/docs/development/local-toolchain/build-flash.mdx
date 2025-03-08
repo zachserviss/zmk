@@ -18,7 +18,19 @@ an onboard MCU, or one that uses an MCU board addon.
 
 ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html)
 
+<<<<<<< HEAD
 Given the following:
+=======
+<Tabs queryString="build-opts" defaultValue="onboardMcu"
+      values={[
+        {label: 'Onboard MCU', value: 'onboardMcu'},
+        {label: 'Addon MCU', value: 'addonMcu'}
+      ]}>
+  <TabItem value="onboardMcu">
+    Keyboards with onboard MCU chips are simply treated as the
+    [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html)
+    as far as Zephyr™ is concerned.
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 - MCU Board: Proton-C
 - Keyboard PCB: kyria_left
@@ -79,7 +91,7 @@ Build times can be significantly reduced after the initial build by omitting all
 
 ### Building With External Modules
 
-ZMK supports loading additional boards, shields, code, etc. from [external Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html), facilitating out-of-tree management and versioning independent of the ZMK repository. To build with any additional modules, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
+ZMK supports loading additional boards, shields, code, etc. from [external ZMK modules](../../features/modules.mdx), facilitating out-of-tree management and versioning independent of the ZMK repository. To build with any additional modules, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
 
 For instance, building with the `my-vendor-keebs-module` checked out to your documents directory, you would build like:
 

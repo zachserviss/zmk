@@ -39,8 +39,7 @@ module.exports = {
         "features/soft-off",
         "features/encoders",
         "features/displays",
-        "features/backlight",
-        "features/underglow",
+        "features/lighting",
         "features/studio",
       ],
     },
@@ -102,17 +101,20 @@ module.exports = {
       },
       collapsed: true,
       items: [
-        "config/backlight",
         "config/battery",
         "config/behaviors",
         "config/bluetooth",
         "config/combos",
         "config/displays",
         "config/encoders",
+<<<<<<< HEAD
+=======
+        "config/lighting",
+        "config/pointing",
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
         "config/keymap",
         "config/kscan",
         "config/power",
-        "config/underglow",
         "config/system",
         "config/studio",
       ],
@@ -130,6 +132,25 @@ module.exports = {
             "development/hardware-integration/studio-setup",
             "development/hardware-integration/shift-registers",
             "development/hardware-integration/encoders",
+<<<<<<< HEAD
+=======
+            "development/hardware-integration/soft-off-setup",
+            "development/hardware-integration/pointing",
+            "development/hardware-integration/battery",
+            {
+              type: "category",
+              label: "Lighting",
+              link: {
+                type: "doc",
+                id: "development/hardware-integration/lighting/index",
+              },
+              collapsed: true,
+              items: [
+                "development/hardware-integration/lighting/underglow",
+                "development/hardware-integration/lighting/backlight",
+              ],
+            },
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
           ],
         },
         {
@@ -166,6 +187,7 @@ module.exports = {
             "development/local-toolchain/posix-board",
           ],
         },
+        "development/module-creation",
         "development/usb-logging",
         "development/studio-rpc-protocol",
         "development/new-behavior",

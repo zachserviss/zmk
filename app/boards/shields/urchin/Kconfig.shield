@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Copyright (c) 2020 The ZMK Contributors
+=======
+# Copyright (c) 2022 Duccio Breschi
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 # SPDX-License-Identifier: MIT
 
 config SHIELD_URCHIN_LEFT

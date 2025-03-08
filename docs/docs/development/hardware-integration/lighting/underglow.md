@@ -1,8 +1,10 @@
 ---
 title: RGB Underglow
 sidebar_label: RGB Underglow
+description: Lighting system that controls strips of RGB LEDs.
 ---
 
+<<<<<<< HEAD:docs/docs/features/underglow.md
 RGB underglow is a feature used to control "strips" of RGB LEDs. Most of the time this is called underglow and creates a glow underneath the board using a ring of LEDs around the edge, hence the name. However, this can be extended to be used to control anything from a single LED to a long string of LEDs anywhere on the keyboard.
 
 :::info
@@ -63,6 +65,16 @@ RGB underglow is always added to a board, not a shield. This is a consequence of
 If you have a shield with RGB underglow, you must add a `boards/` directory within your shield folder to define the RGB underglow individually for each board that supports the shield.
 Inside the `boards/` folder, you define a `<board>.overlay` for each different board.
 For example, the Kyria shield has a `boards/nice_nano.overlay` file that defines the RGB underglow for the `nice_nano` board specifically.
+=======
+Please see [lighting feature page](../../../features/lighting.md#rgb-underglow) for an introduction on the feature.
+
+Support for RGB underglow is always added to a board, not a shield. This is because the LED strip drivers rely on hardware-specific interfaces (e.g. SPI, I2S) and configurations, which shields do not control.
+See the documentation page on [pin control](../pinctrl.mdx) for detailed information on setting up pins for hardware protocols such as SPI or PIO that are used for LED strips.
+
+Shields written for boards which support RGB underglow should add a `boards/` folder underneath the shield folder. Inside this `boards/` folder, create a `<board>.overlay` for any of the boards the shield can be used with. Place all hardware-specific configurations in these `.overlay` files.
+
+For example: the `kyria` shield has a [`boards/nice_nano_v2.overlay`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/boards/nice_nano_v2.overlay) and a [`boards/nrfmicro_13.overlay`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/boards/nrfmicro_13.overlay), which configure a WS2812 LED strip for the `nice_nano_v2` and `nrfmicro_13` boards respectively.
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684:docs/docs/development/hardware-integration/lighting/underglow.md
 
 ### nRF52-Based Boards
 

@@ -4,7 +4,11 @@
 if SHIELD_URCHIN_LEFT
 
 config ZMK_KEYBOARD_NAME
+<<<<<<< HEAD
     default "Urchin"
+=======
+    default "urchin"
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
@@ -14,4 +18,8 @@ endif
 if SHIELD_URCHIN_LEFT || SHIELD_URCHIN_RIGHT
 config ZMK_SPLIT
     default y
+<<<<<<< HEAD
 endif
+=======
+endif
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684

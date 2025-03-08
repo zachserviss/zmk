@@ -8,7 +8,63 @@ ZMK Studio support is in alpha. Although best efforts are being made, keeping co
 
 :::
 
+<<<<<<< HEAD
 ZMK Studio provides runtime update functionality to ZMK powered devices, allowing users to change their keymap layers without flashing new firmware to their keyboards. Studio is still under active development, and is not yet ready for casual end user use.
+=======
+## Capabilities
+
+ZMK Studio currently has the following capabilities:
+
+| Legend: | ✅ Supported | 🚧 Under Development | 💡 Planned | 🕯️ Low Priority | ❌ Not Planned |
+| :------ | :----------- | :------------------- | :--------- | :-------------- | -------------- |
+
+| Status | Feature/Capability                                                                                                                        |
+| :----: | ----------------------------------------------------------------------------------------------------------------------------------------- |
+|   ✅   | Making keymap changes while keyboard is in use                                                                                            |
+|   ✅   | Making changes while connected via USB                                                                                                    |
+|   ✅   | Native app for: Windows, Linux, MacOS                                                                                                     |
+|   ✅   | Making changes while connected via BLE (Linux web-app & native apps only)                                                                 |
+|   ✅   | Assigning [predefined behaviors](../keymaps/behaviors/index.mdx) to keys                                                                  |
+|   ✅   | Assigning [user-defined behaviors](../keymaps/behaviors/index.mdx#user-defined-behaviors) to keys                                         |
+|   💡   | [Configuring basic behavior properties](../config/behaviors.md)                                                                           |
+|   💡   | Configuring advanced behavior properties, e.g. [tap dance](../keymaps/behaviors/tap-dance.mdx), [macros](../keymaps/behaviors/macros.md), |
+|   ❌   | Defining new behaviors not specified in devicetree                                                                                        |
+|   💡   | Configuring [combos](../keymaps/combos.md)                                                                                                |
+|   💡   | Configuring [conditional layers](../keymaps/conditional-layers.md)                                                                        |
+|   🕯️   | Assigning behaviors to encoders                                                                                                           |
+|   ✅   | Selecting alternative pre-defined physical layouts for the keyboard                                                                       |
+|   ❌   | Defining new physical layouts for the keyboard                                                                                            |
+|   ✅   | Renaming layers & enabling [extra layers](#including-extra-layers)                                                                        |
+|   ❌   | Adding more layers than specified by devicetree                                                                                           |
+|   💡   | Host locale selection                                                                                                                     |
+|   💡   | Importing and exporting keymaps                                                                                                           |
+
+Items listed as "planned", "under development", "low priority", or "not planned" can be configured using [devicetree](../config/index.md#devicetree-files) instead.
+
+## Keymap Changes
+
+To unlock your keyboard to allow ZMK Studio to make changes, you'll need to add a [`&studio_unlock`](../keymaps/behaviors/studio-unlock.md) binding to the keymap.
+
+:::note
+
+Once using ZMK Studio to manage your keymap, any future changes made to the `.keymap` file for your keyboard will not be applied unless you perform a "Restore Stock Settings" action from the ZMK Studio UI.
+
+Generally, if you intend to use ZMK Studio, then you should not make any further changes to the `.keymap` file (with the exception of adding new empty layers to then use within ZMK Studio).
+
+:::
+
+## Accessing ZMK Studio
+
+You can use ZMK Studio with Chrome/Edge at https://zmk.studio/.
+
+To use the native app for Linux, macOS, or Windows, visit the [download page](https://zmk.studio/download).
+
+:::warning
+
+To use ZMK Studio over USB, you need permission to access the USB serial port. This most commonly occurs on Linux, with various distributions having different methods of resolving the error. For example, you may need to be added to a `uucp` or a `dialout` group. Refer to your operating system's documentation for more information.
+
+:::
+>>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 ## Building
 
