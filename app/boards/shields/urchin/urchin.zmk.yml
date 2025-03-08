@@ -8,8 +8,4 @@ features:
   - keys
 siblings:
   - urchin_left
-<<<<<<< HEAD
   - urchin_right
-=======
-  - urchin_right
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684

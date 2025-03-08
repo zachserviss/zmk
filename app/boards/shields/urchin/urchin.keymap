@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // Copyright (c) 2022 The ZMK Contributors
 // SPDX-License-Identifier: MIT
 
@@ -102,12 +101,3 @@
         };
     };
 };
-=======
-/*
- * Copyright (c) 2020 Duccio Breschi
- *
- * SPDX-License-Identifier: MIT
- */
-
-#include "../../../urchin.keymap"
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684

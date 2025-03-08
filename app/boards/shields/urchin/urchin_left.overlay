@@ -21,8 +21,4 @@
         , <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // ROW2
         , <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // ROW3
     ;
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
