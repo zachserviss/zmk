@@ -7,7 +7,6 @@
 #include "chocofi.dtsi"
 
 &kscan0 {
-<<<<<<< HEAD
     col-gpios
         = <&pro_micro 21 GPIO_ACTIVE_HIGH>
         , <&pro_micro 20 GPIO_ACTIVE_HIGH>
@@ -16,14 +15,4 @@
         , <&pro_micro 15 GPIO_ACTIVE_HIGH>
         , <&pro_micro 14 GPIO_ACTIVE_HIGH>
         ;
-=======
-	col-gpios
-		= <&pro_micro 21 GPIO_ACTIVE_HIGH>
-		, <&pro_micro 20 GPIO_ACTIVE_HIGH>
-		, <&pro_micro 19 GPIO_ACTIVE_HIGH>
-		, <&pro_micro 18 GPIO_ACTIVE_HIGH>
-		, <&pro_micro 15 GPIO_ACTIVE_HIGH>
-		, <&pro_micro 14 GPIO_ACTIVE_HIGH>
-		;
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 };

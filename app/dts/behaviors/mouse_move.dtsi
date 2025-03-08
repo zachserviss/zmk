@@ -16,6 +16,7 @@
             time-to-max-speed-ms = <300>;
             acceleration-exponent = <1>;
         };
+        #warning "mmv node defined in app/dts/behaviours"
     };
 
     mmv_input_listener: mmv_input_listener {
