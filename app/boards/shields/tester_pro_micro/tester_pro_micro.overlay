@@ -1,18 +1,9 @@
 #include <dt-bindings/zmk/matrix_transform.h>
-#include "tester_pro_micro-layouts.dtsi"
-
-&physical_layout0 {
-    transform = <&transform0>;
-};
-
-&physical_layout1 {
-    transform = <&transform0>;
-};
 
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,physical-layout = &physical_layout0;
+        zmk,matrix-transform = &transform0;
     };
 
     kscan0: kscan {

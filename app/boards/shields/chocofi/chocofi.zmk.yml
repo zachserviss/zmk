@@ -2,19 +2,12 @@ file_format: "1"
 id: chocofi
 name: Chocofi
 type: shield
-<<<<<<< HEAD
-=======
 url: https://github.com/pashutk/chocofi
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 requires: [pro_micro]
 exposes: [i2c_oled]
 features:
   - keys
   - display
-<<<<<<< HEAD
-  - underglow
-=======
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 siblings:
   - chocofi_left
   - chocofi_right

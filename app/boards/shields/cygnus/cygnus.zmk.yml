@@ -2,14 +2,10 @@ file_format: "1"
 id: cygnus
 name: Cygnus
 type: shield
-<<<<<<< HEAD
-requires: [pro_micro]
-=======
 url:
 requires:
   - pro_micro
 exposes:
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 features:
   - keys
 siblings:

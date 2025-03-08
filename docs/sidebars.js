@@ -25,6 +25,7 @@ module.exports = {
             "troubleshooting/building-issues",
             "troubleshooting/flashing-issues",
             "troubleshooting/connection-issues",
+            "troubleshooting/hardware-issues",
           ],
         },
       ],
@@ -36,8 +37,9 @@ module.exports = {
         "features/split-keyboards",
         "features/debouncing",
         "features/battery",
-        "features/soft-off",
+        "features/low-power-states",
         "features/encoders",
+        "features/pointing",
         "features/displays",
         "features/lighting",
         "features/studio",
@@ -90,6 +92,22 @@ module.exports = {
         "keymaps/combos",
         "keymaps/conditional-layers",
         "keymaps/list-of-keycodes",
+        {
+          type: "category",
+          label: "Input Processors",
+          link: {
+            type: "doc",
+            id: "keymaps/input-processors/index",
+          },
+          collapsed: true,
+          items: [
+            "keymaps/input-processors/usage",
+            "keymaps/input-processors/scaler",
+            "keymaps/input-processors/transformer",
+            "keymaps/input-processors/code-mapper",
+            "keymaps/input-processors/temp-layer",
+          ],
+        },
       ],
     },
     {
@@ -107,12 +125,10 @@ module.exports = {
         "config/combos",
         "config/displays",
         "config/encoders",
-<<<<<<< HEAD
-=======
         "config/lighting",
         "config/pointing",
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
         "config/keymap",
+        "config/layout",
         "config/kscan",
         "config/power",
         "config/system",
@@ -124,16 +140,19 @@ module.exports = {
         {
           type: "category",
           label: "Hardware Integration",
+          link: {
+            type: "doc",
+            id: "development/hardware-integration/index",
+          },
           collapsed: true,
           items: [
             "development/hardware-integration/new-shield",
+            "development/hardware-integration/physical-layouts",
             "development/hardware-integration/hardware-metadata-files",
-            "development/hardware-integration/boards-shields-keymaps",
-            "development/hardware-integration/studio-setup",
+            "development/hardware-integration/pinctrl",
+            "development/hardware-integration/dongle",
             "development/hardware-integration/shift-registers",
             "development/hardware-integration/encoders",
-<<<<<<< HEAD
-=======
             "development/hardware-integration/soft-off-setup",
             "development/hardware-integration/pointing",
             "development/hardware-integration/battery",
@@ -150,7 +169,6 @@ module.exports = {
                 "development/hardware-integration/lighting/backlight",
               ],
             },
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
           ],
         },
         {
@@ -159,6 +177,7 @@ module.exports = {
           collapsed: true,
           items: [
             "development/contributing/clean-room",
+            "development/contributing/pull-requests",
             "development/contributing/documentation",
           ],
         },
@@ -176,7 +195,7 @@ module.exports = {
               },
               collapsed: true,
               items: [
-                "development/local-toolchain/setup/docker",
+                "development/local-toolchain/setup/container",
                 "development/local-toolchain/setup/native",
               ],
             },

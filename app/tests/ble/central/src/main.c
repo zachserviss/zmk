@@ -44,11 +44,8 @@ static bool read_hid_report_on_connect = false;
 static bool skip_set_security_on_connect = false;
 static bool skip_discovery_on_connect = false;
 static bool read_directly_on_discovery = false;
-<<<<<<< HEAD
-=======
 static bool write_hid_indicators_on_discovery = false;
 static bool subscribe_to_pointer_report = false;
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 static int32_t wait_on_start = 0;
 
 static void ble_central_native_posix_options(void) {
@@ -93,6 +90,11 @@ static void ble_central_native_posix_options(void) {
          .type = 'b',
          .dest = (void *)&read_directly_on_discovery,
          .descript = "Read HIDS report after GATT characteristic discovery"},
+        {.is_switch = true,
+         .option = "write_hid_indicators_on_discovery",
+         .type = 'b',
+         .dest = (void *)&write_hid_indicators_on_discovery,
+         .descript = "Write HIDS indecator report after GATT characteristic discovery"},
         {.option = "wait_on_start",
          .name = "milliseconds",
          .type = 'u',
@@ -107,7 +109,7 @@ NATIVE_TASK(ble_central_native_posix_options, PRE_BOOT_1, 1);
 
 #endif
 
-static void start_scan(void);
+static int start_scan(void);
 
 static struct bt_conn *default_conn;
 
@@ -152,25 +154,21 @@ static uint8_t discover_func(struct bt_conn *conn, const struct bt_gatt_attr *at
 
     LOG_DBG("[ATTRIBUTE] handle %u", attr->handle);
 
-    if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_HIDS)) {
-        memcpy(&uuid, BT_UUID_HIDS_REPORT, sizeof(uuid));
-        discover_params.uuid = &uuid.uuid;
-        discover_params.start_handle = attr->handle + 1;
-        discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
+    bool find_next_hids_report = false;
 
-        err = bt_gatt_discover(conn, &discover_params);
-        if (err) {
-            LOG_DBG("[Discover failed] (err %d)", err);
-        }
+    if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_HIDS)) {
+        find_next_hids_report = true;
     } else if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_HIDS_REPORT)) {
-        if (read_directly_on_discovery) {
+        if (read_directly_on_discovery && !read_params.single.handle) {
             read_params.single.handle = bt_gatt_attr_value_handle(attr);
             read_params.single.offset = 0;
             read_params.handle_count = 1;
             read_params.func = read_cb;
 
             bt_gatt_read(conn, &read_params);
-        } else {
+
+            find_next_hids_report = write_hid_indicators_on_discovery;
+        } else if (!subscribe_params.value_handle) {
             memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
             discover_params.uuid = &uuid.uuid;
             discover_params.start_handle = attr->handle + 2;
@@ -181,13 +179,6 @@ static uint8_t discover_func(struct bt_conn *conn, const struct bt_gatt_attr *at
             if (err) {
                 LOG_DBG("[Discover failed] (err %d)", err);
             }
-<<<<<<< HEAD
-        }
-    } else {
-        subscribe_params.notify = notify_func;
-        subscribe_params.value = BT_GATT_CCC_NOTIFY;
-        subscribe_params.ccc_handle = attr->handle;
-=======
         } else if (!consumer_subscribe_params.value_handle) {
             memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
             discover_params.uuid = &uuid.uuid;
@@ -222,7 +213,6 @@ static uint8_t discover_func(struct bt_conn *conn, const struct bt_gatt_attr *at
         }
     } else if (discover_params.type == BT_GATT_DISCOVER_DESCRIPTOR) {
         if (!subscribe_params.ccc_handle) {
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
             subscribe_params.notify = notify_func;
             subscribe_params.value = BT_GATT_CCC_NOTIFY;
@@ -259,9 +249,6 @@ static uint8_t discover_func(struct bt_conn *conn, const struct bt_gatt_attr *at
             }
         }
 
-<<<<<<< HEAD
-        return BT_GATT_ITER_STOP;
-=======
         find_next_hids_report = !consumer_subscribe_params.ccc_handle ||
                                 write_hid_indicators_on_discovery || subscribe_to_pointer_report;
     }
@@ -276,7 +263,6 @@ static uint8_t discover_func(struct bt_conn *conn, const struct bt_gatt_attr *at
         if (err) {
             LOG_DBG("[Discover failed] (err %d)", err);
         }
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
     }
 
     return BT_GATT_ITER_STOP;
@@ -358,7 +344,7 @@ static void device_found(const bt_addr_le_t *addr, int8_t rssi, uint8_t type,
     }
 }
 
-static void start_scan(void) {
+static int start_scan(void) {
     int err;
 
     /* Use active scanning and disable duplicate filtering to handle any
@@ -373,10 +359,11 @@ static void start_scan(void) {
     err = bt_le_scan_start(&scan_param, device_found);
     if (err) {
         LOG_DBG("[Scanning failed to start] (err %d)", err);
-        return;
+        return err;
     }
 
     LOG_DBG("[Scanning successfully started]");
+    return 0;
 }
 
 static void discover_conn(struct bt_conn *conn) {
@@ -495,7 +482,7 @@ struct bt_conn_auth_info_cb auth_info_cb = {
     .pairing_complete = pairing_complete,
 };
 
-void main(void) {
+int main(void) {
     int err;
 
     if (wait_on_start > 0) {
@@ -508,10 +495,10 @@ void main(void) {
 
     if (err) {
         LOG_DBG("[Bluetooth init failed] (err %d)", err);
-        return;
+        return err;
     }
 
     LOG_DBG("[Bluetooth initialized]");
 
-    start_scan();
+    return start_scan();
 }

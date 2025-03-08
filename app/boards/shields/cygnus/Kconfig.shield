@@ -2,14 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_CYGNUS_LEFT
-<<<<<<< HEAD
-    def_bool $(shields_list_contains,cygnus_left)
-
-config SHIELD_CYGNUS_RIGHT
-    def_bool $(shields_list_contains,cygnus_right)
-=======
 	def_bool $(shields_list_contains,cygnus_left)
 
 config SHIELD_CYGNUS_RIGHT
 	def_bool $(shields_list_contains,cygnus_right)
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684

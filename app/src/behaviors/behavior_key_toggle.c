@@ -17,9 +17,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-<<<<<<< HEAD
-static int behavior_key_toggle_init(const struct device *dev) { return 0; }
-=======
 enum toggle_mode {
     ON,
     OFF,
@@ -29,18 +26,30 @@ enum toggle_mode {
 struct behavior_key_toggle_config {
     enum toggle_mode toggle_mode;
 };
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    bool pressed = zmk_hid_is_pressed(binding->param1);
-    return raise_zmk_keycode_state_changed_from_encoded(binding->param1, !pressed, event.timestamp);
+    const struct behavior_key_toggle_config *cfg =
+        zmk_behavior_get_binding(binding->behavior_dev)->config;
+    switch (cfg->toggle_mode) {
+    case ON:
+        return raise_zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp);
+    case OFF:
+        return raise_zmk_keycode_state_changed_from_encoded(binding->param1, false,
+                                                            event.timestamp);
+    case FLIP:
+        bool pressed = zmk_hid_is_pressed(binding->param1);
+        return raise_zmk_keycode_state_changed_from_encoded(binding->param1, !pressed,
+                                                            event.timestamp);
+    default:
+        return -ENOTSUP;
+    };
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
@@ -73,14 +82,10 @@ static const struct behavior_driver_api behavior_key_toggle_driver_api = {
 };
 
 #define KT_INST(n)                                                                                 \
-<<<<<<< HEAD
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_toggle_init, NULL, NULL, NULL, POST_KERNEL,            \
-=======
     static const struct behavior_key_toggle_config behavior_key_toggle_config_##n = {              \
         .toggle_mode = DT_ENUM_IDX(DT_DRV_INST(n), toggle_mode),                                   \
     };                                                                                             \
     BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, &behavior_key_toggle_config_##n, POST_KERNEL,     \
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_toggle_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KT_INST)

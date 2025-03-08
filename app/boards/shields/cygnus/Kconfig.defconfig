@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-# Copyright (c) 2024 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-if SHIELD_CYGNUS_LEFT
-
-config ZMK_KEYBOARD_NAME
-    default "Cygnus"
-
-config ZMK_SPLIT_ROLE_CENTRAL
-    default y
-=======
 if SHIELD_CYGNUS_LEFT
 
 config ZMK_KEYBOARD_NAME
@@ -17,17 +5,12 @@ config ZMK_KEYBOARD_NAME
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 endif
 
 if SHIELD_CYGNUS_LEFT || SHIELD_CYGNUS_RIGHT
 
 config ZMK_SPLIT
-<<<<<<< HEAD
-    default y
-=======
 	default y
->>>>>>> 207afe2ecda1ff53c7ec2af74d2aef61be87b684
 
 endif

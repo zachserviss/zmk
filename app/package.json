@@ -19,8 +19,5 @@
   "homepage": "https://zmk.dev/",
   "devDependencies": {
     "prettier": "^2.8.7"
-  },
-  "dependencies": {
-    "zmkfirmware": "file:"
   }
 }
