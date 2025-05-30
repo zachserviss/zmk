@@ -62,8 +62,20 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     draw_battery(canvas, state);
 
     // Draw output status
-    lv_canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_dsc,
-                        state->connected ? LV_SYMBOL_BLUETOOTH : LV_SYMBOL_CLOSE);
+    // Draw connection/output status: USB, Bluetooth, or Close symbol
+    const char *symbol;
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    if (state->charging) {
+        symbol = LV_SYMBOL_USB;
+    } else
+#endif
+    if (state->connected) {
+        symbol = LV_SYMBOL_BLUETOOTH;
+    } else {
+        symbol = LV_SYMBOL_CLOSE;
+    }
+
+    lv_canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_dsc, symbol);
 
     // Rotate canvas
     rotate_canvas(canvas, cbuf);
