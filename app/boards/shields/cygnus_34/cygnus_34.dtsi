@@ -1,0 +1,9 @@
+/* This file is derived from cygnus.dtsi. 
+   Diode direction changed from "col2row" to "row2col"
+*/
+&matrix_control {
+	compatible = "gpio-keys";
+	/* Update the pin mappings as required */
+	row1-gpios = <&gpioa 0 GPIO_ACTIVE_LOW>;
+	row2-gpios = <&gpioa 1 GPIO_ACTIVE_LOW>;
+};
